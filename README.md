@@ -116,9 +116,9 @@ Open Browser → **http://localhost:5173/**
 
 ---
 
-## 🎨 UI & Screenshots (Add later)
+## 🎨 UI & Screenshots
 
-_To be added after frontend improvements:_
+
 ```
 <img width="1510" height="325" alt="image" src="https://github.com/user-attachments/assets/30525d10-f8d6-421e-b712-d76c47821976" />
 <img width="1452" height="761" alt="image" src="https://github.com/user-attachments/assets/7bda9205-a019-4ee6-a1b6-c9f53a0ff496" />
