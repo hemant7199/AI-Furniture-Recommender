@@ -78,11 +78,7 @@ AI-Furniture-Recommender/
 │   └── index.css
 │
 ├── notebooks/     # Model Training & Analytics (.ipynb)
-└── README.md<img width="1536" height="802" alt="Screenshot 2025-10-19 135557" src="https://github.com/user-attachments/assets/62983edb-d29f-4f03-bcee-290668ad681d" />
-<img width="1510" height="325" alt="Screenshot 2025-10-19 135701" src="https://github.com/user-attachments/assets/202d33ce-d3f9-4e38-a4d9-54d7e1a3ce63" />
-<img width="1452" height="761" alt="Screenshot 2025-10-19 135821" src="https://github.com/user-attachments/assets/37da7808-0850-4f2f-a71c-81320302eb82" />
-<img width="1215" height="638" alt="Screenshot 2025-10-19 135901" src="https://github.com/user-attachments/assets/f047b95d-f439-4b6d-979e-131faa8c44fc" />
-
+└── README.md
 ```
 
 ---
@@ -124,10 +120,11 @@ Open Browser → **http://localhost:5173/**
 
 
 ```
-<img width="1510" height="325" alt="image" src="https://github.com/user-attachments/assets/30525d10-f8d6-421e-b712-d76c47821976" />
-<img width="1452" height="761" alt="image" src="https://github.com/user-attachments/assets/7bda9205-a019-4ee6-a1b6-c9f53a0ff496" />
-<img width="1215" height="638" alt="image" src="https://github.com/user-attachments/assets/6cba50ee-8951-4523-b220-5900f4bde436" />
-<img width="1536" height="802" alt="image" src="https://github.com/user-attachments/assets/6894012b-4863-4b4d-a4b4-503eaa6d7b0f" />
+<img width="1215" height="638" alt="Screenshot 2025-10-19 135901" src="https://github.com/user-attachments/assets/2c068394-d666-47a1-b66d-9eaa1f3e8abb" />
+<img width="1536" height="802" alt="Screenshot 2025-10-19 135557" src="https://github.com/user-attachments/assets/91ce5235-08e8-4ca7-89d3-781ff994e99f" />
+<img width="1510" height="325" alt="Screenshot 2025-10-19 135701" src="https://github.com/user-attachments/assets/aac1fc1f-e2bf-4124-ad8c-60a32a037151" />
+<img width="1452" height="761" alt="Screenshot 2025-10-19 135821" src="https://github.com/user-attachments/assets/3f7995d7-e4be-4946-bff0-6d79aac38585" />
+
 
 ```
 
