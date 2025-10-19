@@ -120,22 +120,21 @@ Open Browser → **http://localhost:5173/**
 
 
 ```
-### 🖼 Screenshot 1
-![Screenshot 1](https://github.com/user-attachments/assets/4ae03696-4208-43d8-9af2-3c05e00a9e8c)
 
-### 🖼 Screenshot 2
-![Screenshot 2](https://github.com/user-attachments/assets/e8986f29-d42e-4f5c-bd5d-28540993293c)
+## 📸 Project Screenshots
 
-### 🖼 Screenshot 3
-![Screenshot 3](https://github.com/user-attachments/assets/ca52527b-46d5-40c5-be4f-2d787423f34d)
+### 🏠 Home Page
+![Home Page](https://github.com/user-attachments/assets/4ae03696-4208-43d8-9af2-3c05e00a9e8c)
 
-### 🖼 Screenshot 4
-![Screenshot 4](https://github.com/user-attachments/assets/bc320851-1bce-430e-a1ba-d6410f9a4953)
+### 💬 Chat Interface
+![Chat Interface](https://github.com/user-attachments/assets/e8986f29-d42e-4f5c-bd5d-28540993293c)
 
-<img width="1536" height="802" alt="Screenshot 2025-10-19 135557" src="https://github.com/user-attachments/assets/4ae03696-4208-43d8-9af2-3c05e00a9e8c" />
-<img width="1510" height="325" alt="Screenshot 2025-10-19 135701" src="https://github.com/user-attachments/assets/e8986f29-d42e-4f5c-bd5d-28540993293c" />
-<img width="1452" height="761" alt="Screenshot 2025-10-19 135821" src="https://github.com/user-attachments/assets/ca52527b-46d5-40c5-be4f-2d787423f34d" />
-<img width="1215" height="638" alt="Screenshot 2025-10-19 135901" src="https://github.com/user-attachments/assets/bc320851-1bce-430e-a1ba-d6410f9a4953" />
+### 📊 Analytics Dashboard
+![Analytics Dashboard](https://github.com/user-attachments/assets/ca52527b-46d5-40c5-be4f-2d787423f34d)
+
+### 🪑 Product Details
+![Product Details](https://github.com/user-attachments/assets/bc320851-1bce-430e-a1ba-d6410f9a4953)
+
 
 ```
 
