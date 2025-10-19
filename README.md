@@ -120,12 +120,7 @@ Open Browser → **http://localhost:5173/**
 
 
 ```
-<img width="1215" height="638" alt="Screenshot 2025-10-19 135901" src="https://github.com/user-attachments/assets/2c068394-d666-47a1-b66d-9eaa1f3e8abb" />
-<img width="1536" height="802" alt="Screenshot 2025-10-19 135557" src="https://github.com/user-attachments/assets/91ce5235-08e8-4ca7-89d3-781ff994e99f" />
-<img width="1510" height="325" alt="Screenshot 2025-10-19 135701" src="https://github.com/user-attachments/assets/aac1fc1f-e2bf-4124-ad8c-60a32a037151" />
-<img width="1452" height="761" alt="Screenshot 2025-10-19 135821" src="https://github.com/user-attachments/assets/3f7995d7-e4be-4946-bff0-6d79aac38585" />
-
-
+https://github.com/hemant7199/Clustering/issues/1#issue-3529863597
 ```
 
 ---
