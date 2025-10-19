@@ -121,20 +121,10 @@ Open Browser → **http://localhost:5173/**
 
 ```
 
-## 📸 Project Screenshots
-
-### 🏠 Home Page
-![Home Page](https://github.com/user-attachments/assets/4ae03696-4208-43d8-9af2-3c05e00a9e8c)
-
-### 💬 Chat Interface
-![Chat Interface](https://github.com/user-attachments/assets/e8986f29-d42e-4f5c-bd5d-28540993293c)
-
-### 📊 Analytics Dashboard
-![Analytics Dashboard](https://github.com/user-attachments/assets/ca52527b-46d5-40c5-be4f-2d787423f34d)
-
-### 🪑 Product Details
-![Product Details](https://github.com/user-attachments/assets/bc320851-1bce-430e-a1ba-d6410f9a4953)
-
+<img width="1215" height="638" alt="Screenshot 2025-10-19 135901" src="https://github.com/user-attachments/assets/52f7c7e5-1636-40ad-b5aa-cdcfbfa752fb" />
+<img width="1536" height="802" alt="Screenshot 2025-10-19 135557" src="https://github.com/user-attachments/assets/a4c51c60-afa1-44c3-b352-a96595241eb9" />
+<img width="1510" height="325" alt="Screenshot 2025-10-19 135701" src="https://github.com/user-attachments/assets/e2adc420-72da-4346-8b1b-49913827bdbc" />
+<img width="1452" height="761" alt="Screenshot 2025-10-19 135821" src="https://github.com/user-attachments/assets/9937d06b-f173-41f2-b60f-c69bce1f0ba6" />
 
 ```
 
