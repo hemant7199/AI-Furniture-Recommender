@@ -78,7 +78,11 @@ AI-Furniture-Recommender/
 │   └── index.css
 │
 ├── notebooks/     # Model Training & Analytics (.ipynb)
-└── README.md
+└── README.md<img width="1536" height="802" alt="Screenshot 2025-10-19 135557" src="https://github.com/user-attachments/assets/62983edb-d29f-4f03-bcee-290668ad681d" />
+<img width="1510" height="325" alt="Screenshot 2025-10-19 135701" src="https://github.com/user-attachments/assets/202d33ce-d3f9-4e38-a4d9-54d7e1a3ce63" />
+<img width="1452" height="761" alt="Screenshot 2025-10-19 135821" src="https://github.com/user-attachments/assets/37da7808-0850-4f2f-a71c-81320302eb82" />
+<img width="1215" height="638" alt="Screenshot 2025-10-19 135901" src="https://github.com/user-attachments/assets/f047b95d-f439-4b6d-979e-131faa8c44fc" />
+
 ```
 
 ---
