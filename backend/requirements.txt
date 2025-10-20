@@ -6,9 +6,9 @@ numpy==1.26.4
 pandas==2.2.2
 scikit-learn==1.5.1
 
-# CPU Only Torch (NO GPU)
+# CPU-only Torch
 torch==2.2.2+cpu
---extra-index-url https://download.pytorch.org/whl/cpu
+-f https://download.pytorch.org/whl/cpu
 
 # Transformers & Embeddings
 transformers==4.41.2
@@ -18,7 +18,3 @@ sentence-transformers==2.7.0
 python-dotenv==1.1.1
 pydantic-settings==2.4.0
 requests==2.32.3
-
-faiss-cpu==1.8.0
-
-faiss-cpu==1.8.0
