@@ -1,9 +1,9 @@
-# backend/app/main.py
-from fastapi import FastAPI, UploadFile, File, HTTPException, Query, Response
+from fastapi import FastAPI, UploadFile, File, HTTPException, Query, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional
+from functools import lru_cache
 import pandas as pd
 import os, urllib.parse, requests, math
 
@@ -14,42 +14,39 @@ from .services.genai import DescriptionGenerator
 from .services.analytics import compute_analytics
 from .services.nlp import cluster_products
 
+# ----------------- FastAPI App -----------------
 app = FastAPI(title="AI-ML Furniture Recommender")
 
+# Allow frontend (Vercel) access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # You can restrict to your domain if needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Serve local images: backend/app/data/images
+# Health check for Render
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
+
+# Serve local images (if any)
 STATIC_IMG_DIR = os.path.join(os.path.dirname(__file__), "data", "images")
 if os.path.isdir(STATIC_IMG_DIR):
     app.mount("/images", StaticFiles(directory=STATIC_IMG_DIR), name="images")
 
-# ----------------- helpers -----------------
-
+# ----------------- Helper Functions -----------------
 def split_first(raw) -> str:
-    """
-    Take first token from 'images' column and sanitize quotes/spaces.
-    Handles values like: "url1|url2", "file1.jpg, file2.jpg", "'41abc.jpg '"
-    """
     if not isinstance(raw, str):
         return ""
     first = raw.split("|")[0].split(",")[0].strip()
-    # strip surrounding quotes and stray characters
-    first = first.strip().strip("'\"").strip()
-    return first
+    return first.strip().strip("'\"").strip()
 
 def to_price_number(v) -> Optional[float]:
     if v is None:
         return None
-    s = str(v).strip()
-    if s == "":
-        return None
-    s = s.replace(",", "")
+    s = str(v).strip().replace(",", "")
     for sym in ["₹", "$", "€", "£"]:
         s = s.replace(sym, "")
     try:
@@ -58,28 +55,21 @@ def to_price_number(v) -> Optional[float]:
         return None
 
 def build_click_url(row: pd.Series) -> str:
-    # prefer explicit URL columns if present
     for cand in ["product_url", "url", "link", "product_link"]:
         if cand in row and isinstance(row[cand], str) and row[cand].strip():
             return row[cand].strip()
-    # fallback: Google search by title + brand
     q = f"{row.get('title','')} {row.get('brand','')}".strip() or str(row.get("uniq_id","furniture"))
     return f"https://www.google.com/search?q={urllib.parse.quote(q)}"
 
 def json_none_if_nan(x):
-    """Normalize NaN/NaT to None for JSON safety."""
     try:
-        # math.isnan for floats
         if isinstance(x, float) and math.isnan(x):
             return None
-    except Exception:
+    except:
         pass
-    if x is None:
-        return None
-    return x
+    return x if x is not None else None
 
-# ----------------- data load -----------------
-
+# ----------------- Data Load -----------------
 DATA_PATH = settings.DATA_PATH
 required_cols = [
     "uniq_id","title","brand","description","price","categories","images",
@@ -88,36 +78,58 @@ required_cols = [
 
 try:
     df = pd.read_csv(DATA_PATH)
-
-    # Ensure required columns exist
     for c in required_cols:
         if c not in df.columns:
             df[c] = ""
-
-    # price -> numeric
     df["price_num"] = df["price"].apply(to_price_number) if "price" in df.columns else None
-
-    # first/sanitized image token
     df["image_first"] = df["images"].apply(split_first) if "images" in df.columns else ""
-
 except Exception as e:
     raise RuntimeError(f"Failed to load dataset at {DATA_PATH}: {e}")
 
-embedder = TextEmbedder(model_name=settings.EMBEDDING_MODEL)
-vs = VectorStore(index_dir=settings.VECTOR_INDEX_DIR)
-if not vs.is_built():
-    vs.build(df, embedder, text_cols=["title","description","categories","brand","material","color"])
-genai = DescriptionGenerator()
+# ----------------- Lazy Initialization for Render -----------------
+@lru_cache
+def get_embedder():
+    return TextEmbedder(model_name=settings.EMBEDDING_MODEL)
 
-# Optional CV import (safe)
-try:
-    from .models_cv import CVClassifier
-    cv = CVClassifier()
-except Exception:
-    cv = None
+@lru_cache
+def get_vs():
+    return VectorStore(index_dir=settings.VECTOR_INDEX_DIR)
 
-# ----------------- models -----------------
+@lru_cache
+def get_genai():
+    return DescriptionGenerator()
 
+SKIP_VS_BUILD = os.getenv("SKIP_VS_BUILD", "0") == "1"
+
+def ensure_index_built(df):
+    vs = get_vs()
+    if vs.is_built() or SKIP_VS_BUILD:
+        return
+    emb = get_embedder()
+    vs.build(
+        df,
+        emb,
+        text_cols=["title","description","categories","brand","material","color"]
+    )
+
+# ----------------- Image Resolution -----------------
+AMAZON_PREFIX = "https://m.media-amazon.com/images/I/"
+
+def resolve_image_url(val: str, request: Request) -> Optional[str]:
+    if not val:
+        return None
+    v = val.strip().strip("'\"")
+    if v.lower().startswith("http://") or v.lower().startswith("https://"):
+        return v
+    if v.lower().endswith((".jpg", ".jpeg", ".png", ".webp")) and "/" not in v:
+        return f"{AMAZON_PREFIX}{urllib.parse.quote(v)}"
+    local_path = os.path.join(STATIC_IMG_DIR, v)
+    if os.path.isfile(local_path):
+        base = str(request.base_url).rstrip("/")
+        return f"{base}/images/{urllib.parse.quote(v)}"
+    return None
+
+# ----------------- Models -----------------
 class RecommendRequest(BaseModel):
     query: str
     k: int = 5
@@ -136,39 +148,25 @@ class ClusterResponse(BaseModel):
     n_clusters: int
     labels: List[int]
 
-# ----------------- routes -----------------
-
+# ----------------- Routes -----------------
 @app.get("/")
 def health():
     return {"status": "ok"}
 
-@app.get("/img")
-def proxy_img(url: str = Query(..., description="External image URL to proxy")):
-    """Image proxy to bypass hotlink restrictions."""
-    if not (url.lower().startswith("http://") or url.lower().startswith("https://")):
-        raise HTTPException(status_code=400, detail="Invalid URL")
-    try:
-        r = requests.get(url, timeout=8)
-        if r.status_code != 200:
-            raise HTTPException(status_code=404, detail="Image not found")
-        content_type = r.headers.get("content-type", "image/jpeg")
-        return Response(content=r.content, media_type=content_type)
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Proxy error: {e}")
-
 @app.post("/recommend", response_model=List[RecommendResponseItem])
-def recommend(req: RecommendRequest):
-    hits = vs.search(req.query, embedder, top_k=req.k)
+def recommend(req: RecommendRequest, request: Request):
+    ensure_index_built(df)
+    vs = get_vs()
+    emb = get_embedder()
+    genai = get_genai()
+
+    hits = vs.search(req.query, emb, top_k=req.k)
     if not hits:
         raise HTTPException(status_code=404, detail="No products found")
 
-    out: List[dict] = []
+    out = []
     for idx, score in hits:
         row = df.iloc[idx]
-
-        # short, helpful blurb
         prompt = (
             f"Product: {row.get('title','')}\n"
             f"Brand: {row.get('brand','')}\n"
@@ -180,17 +178,14 @@ def recommend(req: RecommendRequest):
             "Write a concise, enticing description (<= 70 words) for why this fits."
         )
         desc = genai.generate(prompt) or ""
-
         price_val = row.get("price_num", None)
-        price_val = None if (price_val is None or (isinstance(price_val, float) and math.isnan(price_val))) else float(price_val)
-
         img_val = row.get("image_first", "")
-        img_val = "" if (pd.isna(img_val) if isinstance(img_val, float) else False) else str(img_val).strip().strip("'\"")
+        img_url = resolve_image_url(img_val, request)
 
         item = {
             "uniq_id": str(row.get("uniq_id", "")),
             "title": str(row.get("title", "")),
-            "image": img_val or None,
+            "image": img_url,
             "price": price_val,
             "brand": json_none_if_nan(row.get("brand", None)),
             "categories": json_none_if_nan(row.get("categories", None)),
@@ -211,7 +206,7 @@ class ClusterRequest(BaseModel):
 
 @app.post("/nlp/cluster", response_model=ClusterResponse)
 def nlp_cluster(req: ClusterRequest):
-    labels = cluster_products(df, embedder, req.text_cols, req.n_clusters)
+    labels = cluster_products(df, get_embedder(), req.text_cols, req.n_clusters)
     return {"n_clusters": req.n_clusters, "labels": list(map(int, labels))}
 
 @app.post("/data/upload")
@@ -219,7 +214,6 @@ def upload_dataset(file: UploadFile = File(...)):
     global df
     try:
         new_df = pd.read_csv(file.file)
-        # normalize new chunk too
         for c in required_cols:
             if c not in new_df.columns:
                 new_df[c] = ""
@@ -227,14 +221,7 @@ def upload_dataset(file: UploadFile = File(...)):
         new_df["image_first"] = new_df["images"].apply(split_first) if "images" in new_df.columns else ""
 
         df = pd.concat([df, new_df], ignore_index=True)
-        vs.build(df, embedder, text_cols=["title","description","categories","brand","material","color"])
+        ensure_index_built(df)
         return {"rows": int(len(df))}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-@app.get("/cv/predict")
-def cv_predict(image_path: str = "app/data/images/chair1.jpg"):
-    if cv is None:
-        raise HTTPException(status_code=400, detail="CV model not available")
-    label = cv.predict(image_path)
-    return {"image_path": image_path, "label": label}
