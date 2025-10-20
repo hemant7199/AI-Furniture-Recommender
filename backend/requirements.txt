@@ -1,20 +1,15 @@
 fastapi==0.115.0
 uvicorn[standard]==0.30.0
 
-# Light Data & ML
 numpy==1.26.4
 pandas==2.2.2
 scikit-learn==1.5.1
 
-# CPU-only Torch
-torch==2.2.2+cpu
--f https://download.pytorch.org/whl/cpu
+torch==2.2.2
 
-# Transformers & Embeddings
 transformers==4.41.2
 sentence-transformers==2.7.0
 
-# Utilities
 python-dotenv==1.1.1
 pydantic-settings==2.4.0
 requests==2.32.3
